@@ -30,15 +30,20 @@ enum {
 void setColor(int foreground, int background);
 void gameTitle();
 void gotoxy(int x, int y);
-void gameMenu();
+int gameMenu();
 int keyInput();
 void cursorView();
+void game(int menu);
+
+
 
 int main() {
 
 	gameTitle();
 	
-	gameMenu();
+	int menu = gameMenu();
+	game(menu);
+
 
 	return 0;
 }
@@ -69,7 +74,7 @@ void gameTitle() {
 	printf("			----------------------------------------\n");
 }
 
-void gameMenu() {
+int gameMenu() {
 	int x = 42;
 	int y = 18;
 	gotoxy(x-2, y);
@@ -106,7 +111,18 @@ void gameMenu() {
 
 		}
 		else if (key == SUBMIT) {
-
+			if (y == 18) {
+				//시작
+				return 1;
+			}
+			else if (y == 19) {
+				//정보
+				return 2;
+			}
+			else if (y == 20) {
+				//종료
+				return 0;
+			}
 		}
 
 	}
@@ -148,4 +164,45 @@ void cursorView() {
 	cursorInfo.dwSize = 1;
 	cursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+}
+
+void game(int menu) {
+	system("cls");
+	
+	if (menu == 0) {
+		printf("감사합니다.");
+	}
+	else if (menu == 1) {
+		int x = 42;
+		int y = 18;
+		gotoxy(x-2, y);
+		printf("> 쉬움");
+		gotoxy(x , y+1);
+		printf("어려움");
+
+		while (1) {
+			int key = keyInput();
+			if (key == UP) {
+				if (y == 19) {
+					gotoxy(x - 2, y);
+					printf(" ");
+					gotoxy(x - 2, --y);
+					printf(">");
+				}
+			}
+			else if (key == DOWN) {
+				gotoxy(x - 2, y);
+				printf(" ");
+				gotoxy(x - 2, ++y);
+				printf(">");
+			}
+		}
+		
+	
+	}
+	else if (menu == 2) {
+		gotoxy(10, 10);
+		printf("제작자 : 유시현");
+	}
+	Sleep(1000);
 }
