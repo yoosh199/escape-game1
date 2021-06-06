@@ -7,6 +7,28 @@
 #define LEFT 3
 #define RIGHT 4
 #define SUBMIT 5
+#define EASY 6
+#define HARD 7
+#define EASYMAPROW 30
+#define EASYMAPCOLUMN 15
+
+char easyMap[EASYMAPCOLUMN][EASYMAPROW] = {
+	{"00000000000000000000000000000"},
+	{"00000000000000000000000000e00"},
+	{"00000000000100000000000000000"},
+	{"00000000000100000000000000000"},
+	{"00000000000100000000000000000"},
+	{"00000000000100000000000000000"},
+	{"00000000000100000100000000000"},
+	{"00000000000100s00100000000000"},
+	{"00000000000000000001111100000"},
+	{"00000000000000000000000100000"},
+	{"00000000000000000000000100000"},
+	{"00000000000000000000000100000"},
+	{"00000000000000000000000100000"},
+	{"00000000000000000000000000000"},
+	{"00000000000000000000000000000"}
+};
 
 enum {
 	black,
@@ -33,8 +55,8 @@ void gotoxy(int x, int y);
 int gameMenu();
 int keyInput();
 void cursorView();
-void game(int menu);
-
+int game(int menu);
+void map(int set);
 
 
 int main() {
@@ -42,8 +64,8 @@ int main() {
 	gameTitle();
 	
 	int menu = gameMenu();
-	game(menu);
-
+	int set = game(menu);
+	map(set);
 
 	return 0;
 }
@@ -166,11 +188,12 @@ void cursorView() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 }
 
-void game(int menu) {
+int game(int menu) {
 	system("cls");
 	
 	if (menu == 0) {
 		printf("감사합니다.");
+	
 	}
 	else if (menu == 1) {
 		int x = 42;
@@ -196,6 +219,14 @@ void game(int menu) {
 				gotoxy(x - 2, ++y);
 				printf(">");
 			}
+			else if (key == SUBMIT) {
+				if (y == 18) {
+					return EASY;
+				}
+				else if (y == 19) {
+					return HARD;
+				}
+			}
 		}
 		
 	
@@ -203,6 +234,20 @@ void game(int menu) {
 	else if (menu == 2) {
 		gotoxy(10, 10);
 		printf("제작자 : 유시현");
+		
 	}
 	Sleep(1000);
+	return 0;
+}
+
+void map(int set) {
+	system("cls");
+	if (set == EASY) {
+		for (int i = 0; i < EASYMAPCOLUMN; i++) {
+			for (int j = 0; j < EASYMAPROW; j++) {
+				printf("%c", easyMap[i][j]);
+			}
+			printf("\n");
+		}
+	}
 }
