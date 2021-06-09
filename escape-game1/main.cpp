@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <conio.h>
+#include <mmsystem.h>
+#pragma comment(lib,"winmm.lib")
 
 #define UP 1
 #define DOWN 2
@@ -18,19 +20,19 @@
 
 char easyMap[EASYMAPCOLUMN][EASYMAPROW] = {
 	{"1111111111111111111111111111111111111111111111111"},
-	{"1000000000000000000000000000000000000000000000e01"},
-	{"1000000000000000000000000000000100000000000000001"},
-	{"1000000000000000000000000000000100000000000000001"},
-	{"1000000000000000000000000000000100000000000000001"},
-	{"1000000000000000000000100010000100000000000000001"},
-	{"1000000000000000000001010000000100000100000000001"},
-	{"100000000000000000000000s000000100000100000000001"},
-	{"1000000000000000000000100010000000000001111100001"},
-	{"1000000000000000000000000000000000000000000100001"},
-	{"1000000000000000000000000000000000000000000100001"},
-	{"1000000000000000000000000000000000000000000100001"},
-	{"1000000000000000000000000000000000000000000100001"},
-	{"1000000000000000000000000000000000000000000000001"},
+	{"1000010000000000000000000000000000000010000000e01"},
+	{"1000010000000000111100000000000100000010000000001"},
+	{"1001110000000000001100000000000100000011100000001"},
+	{"1000000000001110001100000000000100000000101100001"},
+	{"1000000000000000000100100010000100000000000100001"},
+	{"1001111000000000000111010000000100000100000100001"},
+	{"100000100000000111000000s000000100000100000000001"},
+	{"1000001000000000000000100010000000000001111100001"},
+	{"1000111000000000000000001100000000000000000100001"},
+	{"1000100000000000000000110000000000000000000100001"},
+	{"1000100000000001111100000000000000111100000100001"},
+	{"1000111000000000000000011111111000000000000100001"},
+	{"1000001000000000000000010000000000000000000000001"},
 	{"1111111111111111111111111111111111111111111111111"}
 };
 
@@ -61,14 +63,15 @@ int keyInput();
 void cursorView();
 int game(int menu);
 void map(int set);
-int mapMove(int x,int y);
+void mapOutline();
 
 int main() {
-
+	setColor(white, black);
 	gameTitle();
 	
 	int menu = gameMenu();
 	int set = game(menu);
+	PlaySound(TEXT("Storm1.wav"), 0, SND_FILENAME | SND_ASYNC);
 	map(set);
 
 	return 0;
@@ -247,7 +250,7 @@ int game(int menu) {
 }
 
 void map(int set) {
-	system("cls");
+	mapOutline();
 	int start_x, start_y;
 	if (set == EASY) {
 		for (int i = 0; i < EASYMAPCOLUMN; i++) {
@@ -263,7 +266,19 @@ void map(int set) {
 		for (int k = start_y; k < start_y+3; k++) {
 			gotoxy(23, 5 + n);
 			for (int h = start_x; h < start_x+3; h++) {
-				printf("%c", easyMap[k - 1][h - 1]);
+				if (easyMap[k - 1][h - 1] == '0') {
+					printf(" ");
+				}
+				if (easyMap[k - 1][h - 1] == '1') {
+					printf("#");
+				}
+				if (easyMap[k - 1][h - 1] == 's') {
+					printf("s");
+				}
+				if (easyMap[k - 1][h - 1] == 'e') {
+					printf("@");
+				}
+				
 			}
 			printf("\n");
 			n++;
@@ -275,7 +290,7 @@ void map(int set) {
 			
 			if (key == UP) {
 				if (easyMap[start_y - 1][start_x] == '0') {
-					system("cls");
+					mapOutline();
 					easyMap[start_y][start_x] = '0';
 					start_y -= 1;
 					easyMap[start_y][start_x] = 's';
@@ -283,7 +298,19 @@ void map(int set) {
 					for (int k = start_y; k < start_y + 3; k++) {
 						gotoxy(23, 5 + n);
 						for (int h = start_x; h < start_x + 3; h++) {
-							printf("%c", easyMap[k - 1][h - 1]);
+							if (easyMap[k - 1][h - 1] == '0') {
+								printf(" ");
+							}
+							if (easyMap[k - 1][h - 1] == '1') {
+								printf("#");
+							}
+							if (easyMap[k - 1][h - 1] == 's') {
+								printf("s");
+							}
+							if (easyMap[k - 1][h - 1] == 'e') {
+								printf("@");
+							}
+							
 						}
 						n++;
 
@@ -291,11 +318,13 @@ void map(int set) {
 				}
 				else if (easyMap[start_y - 1][start_x] == 'e') {
 					//¼º°ø
+					break;
 				}
 			}
 			else if (key == DOWN) {
 				if (easyMap[start_y + 1][start_x] == '0') {
-					system("cls");
+					mapOutline();
+
 					easyMap[start_y][start_x] = '0';
 					start_y += 1;
 					easyMap[start_y][start_x] = 's';
@@ -303,18 +332,33 @@ void map(int set) {
 					for (int k = start_y; k < start_y + 3; k++) {
 						gotoxy(23, 5 + n);
 						for (int h = start_x; h < start_x + 3; h++) {
-							printf("%c", easyMap[k - 1][h - 1]);
+							if (easyMap[k - 1][h - 1] == '0') {
+								printf(" ");
+							}
+							if (easyMap[k - 1][h - 1] == '1') {
+								printf("#");
+							}
+							if (easyMap[k - 1][h - 1] == 's') {
+								printf("s");
+							}
+							if (easyMap[k - 1][h - 1] == 'e') {
+								printf("@");
+							}
+							
 						}
 						n++;
 
 					}
 				}
-				
+				else if (easyMap[start_y + 1][start_x] == 'e') {
+					break;
+				}
+
 
 			}
 			else if (key == LEFT) {
-				if (easyMap[start_y][start_x-1] == '0') {
-					system("cls");
+				if (easyMap[start_y][start_x - 1] == '0') {
+					mapOutline();
 					easyMap[start_y][start_x] = '0';
 					start_x -= 1;
 					easyMap[start_y][start_x] = 's';
@@ -322,18 +366,33 @@ void map(int set) {
 					for (int k = start_y; k < start_y + 3; k++) {
 						gotoxy(23, 5 + n);
 						for (int h = start_x; h < start_x + 3; h++) {
-							printf("%c", easyMap[k - 1][h - 1]);
+							if (easyMap[k - 1][h - 1] == '0') {
+								printf(" ");
+							}
+							if (easyMap[k - 1][h - 1] == '1') {
+								printf("#");
+							}
+							if (easyMap[k - 1][h - 1] == 's') {
+								printf("s");
+							}
+							if (easyMap[k - 1][h - 1] == 'e') {
+								printf("@");
+							}
+							
 						}
 						n++;
 
 					}
 				}
-				
+				else if (easyMap[start_y][start_x - 1] == 'e') {
+					break;
+				}
+
 
 			}
 			else if (key == RIGHT) {
 				if (easyMap[start_y][start_x + 1] == '0') {
-					system("cls");
+					mapOutline();
 					easyMap[start_y][start_x] = '0';
 					start_x += 1;
 					easyMap[start_y][start_x] = 's';
@@ -341,16 +400,53 @@ void map(int set) {
 					for (int k = start_y; k < start_y + 3; k++) {
 						gotoxy(23, 5 + n);
 						for (int h = start_x; h < start_x + 3; h++) {
-							printf("%c", easyMap[k - 1][h - 1]);
+							if (easyMap[k - 1][h - 1] == '0') {
+								printf(" ");
+							}
+							if (easyMap[k - 1][h - 1] == '1') {
+								printf("#");
+							}
+							if (easyMap[k - 1][h - 1] == 's') {
+								printf("s");
+							}
+							if (easyMap[k - 1][h - 1] == 'e') {
+								printf("@");
+							}
+							
 						}
 						n++;
 
 					}
 				}
+				else if (easyMap[start_y][start_x + 1] == 'e') {
+					break;
+				}
 				
 			}
 		}
-		
+		gotoxy(30, 10);
+		printf("Clear!!");
+		Sleep(1000);
+
 	}
 }
 
+void mapOutline() {
+	system("cls");
+	gotoxy(22, 4);
+	printf("-----");
+	gotoxy(22, 5);
+	printf("|");
+	gotoxy(26, 5);
+	printf("|");
+	gotoxy(22, 6);
+	printf("|");
+	gotoxy(26, 6);
+	printf("|");
+	gotoxy(22, 7);
+	printf("|");
+	gotoxy(26, 7);
+	printf("|");
+	gotoxy(22, 8);
+	printf("-----");
+}
